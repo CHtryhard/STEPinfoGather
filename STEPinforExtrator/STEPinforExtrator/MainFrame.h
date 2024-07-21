@@ -2,6 +2,7 @@
 #include<wx/wx.h>
 #include <wx/dirctrl.h>
 #include <wx/treectrl.h>
+#include <wx/textctrl.h>
 
 class MyFrame : public wxFrame
 {
@@ -10,5 +11,7 @@ public:
 
 private:
     void OnOpenFolder(wxCommandEvent& event);
-    wxGenericDirCtrl* m_dirCtrl;
+    void OnCloseWindow(wxCommandEvent& event);
+    //wxGenericDirCtrl* m_dirCtrl;
+    wxTextCtrl* fileListTextCtrl;
 };
