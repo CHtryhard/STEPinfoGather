@@ -2,6 +2,8 @@
 #include <wx/dirctrl.h>
 #include <wx/treectrl.h>
 #include <wx/dir.h>
+#include <fstream>
+#include "STEP__Converter.h"
 
 MyFrame::MyFrame(const wxString& title)
     : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
@@ -24,6 +26,7 @@ MyFrame::MyFrame(const wxString& title)
     //Bind event
     Bind(wxEVT_MENU, &MyFrame::OnOpenFolder, this, wxID_OPEN);
     cancelButton->Bind(wxEVT_BUTTON, &MyFrame::OnCloseWindow, this);
+    confirmButton->Bind(wxEVT_BUTTON, &MyFrame::OnConfirmButton, this);
 }
 
 void MyFrame::OnOpenFolder(wxCommandEvent& event)
@@ -31,14 +34,14 @@ void MyFrame::OnOpenFolder(wxCommandEvent& event)
     wxDirDialog openDirDialog(this, "Choose a directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
     if (openDirDialog.ShowModal() == wxID_CANCEL)
         return;
-    wxString path = openDirDialog.GetPath();    
-    wxLogStatus("Folder selected: %s", path);
+    selectedPath = openDirDialog.GetPath();
+    wxLogStatus("Folder selected: %s", selectedPath);
 
-    wxDir dir(path);
+    wxDir dir(selectedPath);
 
     if (!dir.IsOpened())
     {
-        wxLogError("Could not open directory: %s", path);
+        wxLogError("Could not open directory: %s", selectedPath);
         return;
     }
 
@@ -57,4 +60,17 @@ void MyFrame::OnCloseWindow(wxCommandEvent& event)
 {
     wxLogMessage("Exit now");
     Close(true);
+}
+
+void MyFrame::OnConfirmButton(wxCommandEvent& event)
+{
+    std::string path;
+    path = selectedPath.ToStdString();
+    
+    if (processStepFile(path) == -1) {
+        wxLogMessage("Error reading STEP file");
+    }
+    else {
+        wxLogMessage("Success");
+    }
 }
