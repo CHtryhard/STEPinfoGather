@@ -3,13 +3,8 @@
 #include <wx/treectrl.h>
 #include <wx/dir.h>
 #include "STEP__Converter.h"
-
-#include <iostream>
 #include <string>
-#include <filesystem> // C++17 and later
-#include <algorithm>
 
-namespace fs = std::filesystem;
 
 MyFrame::MyFrame(const wxString& title)
     : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
@@ -71,26 +66,20 @@ void MyFrame::OnCloseWindow(wxCommandEvent& event)
 
 void MyFrame::OnConfirmButton(wxCommandEvent& event)
 {
-    std::string path;
-    path = selectedPath.ToStdString();
+    std::string c_path;
+    c_path = selectedPath.ToStdString();
 
-    //wxDir dir(selectedPath);
+    wxDir dir(selectedPath);
 
-    //wxString filename;
+    wxString filename;
+    std::string c_filename;
+    std::string c_filepath;
+    wxArrayString patterns;
+    patterns.Add("*.step");
+    patterns.Add("*.stp");
 
-    //bool cont = dir.GetFirst(&filename, wxEmptyString, wxDIR_FILES);
-    //while (cont)
-    //{
-    //    cont = dir.GetNext(&filename);
-    //}
+    bool cont = dir.GetFirst(&filename, wxEmptyString, wxDIR_FILES);
 
-    //if (processStepFile(path) == -1) {
-    //    wxLogMessage("Error reading STEP file");
-    //}
-    //else {
-    //    wxLogMessage("Success");
-    //}
- 
     //initialize file to write
     std::ofstream outputfile;
     std::time_t currentTime = std::time(nullptr);
@@ -102,11 +91,23 @@ void MyFrame::OnConfirmButton(wxCommandEvent& event)
     int year = localTime.tm_year + 1900; // tm_year is years since 1900
     int month = localTime.tm_mon + 1;    // tm_mon is 0-based, so add 1
     int day = localTime.tm_mday;
-    int hour = localTime.tm_hour;
+    int hour =  localTime.tm_hour;
     int minute = localTime.tm_min;
-    std::string outputpath = path +"//" + std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day) + "__" + std::to_string(hour) + std::to_string(minute) + ".csv";
+    std::string outputpath = c_path + "//" + std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day) + "__" + (hour < 10? "0":"") + std::to_string(hour) + (hour < 10 ? "0" : "")+std::to_string(minute) + ".csv";
     outputfile.open(outputpath, std::ios::app);
     //write header
     outputfile << "File name,X,Y,Z,BV/5000,SV,Density,Weight,QTY" << std::endl;
+
+    while (cont)
+    {
+        if (MatchesPattern(filename, patterns)) {
+        wxLogMessage(filename);
+        c_filename = filename.ToStdString();
+        c_filepath = c_path +"\\"+ c_filename;
+        processStepFile(c_filepath, c_filename, outputfile);
+        }
+        cont = dir.GetNext(&filename);
+    }
+
     outputfile.close();
 }

@@ -5,12 +5,23 @@
 #include <BRepBndLib.hxx>
 #include <Interface_Static.hxx>
 
+bool MatchesPattern(const wxString& filename, const wxArrayString& patterns)
+{
+    for (const auto& pattern : patterns)
+    {
+        if (wxMatchWild(pattern, filename))
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
-int processStepFile(const std::string& filename, std::ofstream& myfile) {
+int processStepFile(const std::string& file_fullpath, const std::string& c_filename, std::ofstream& myfile) {
 
     // Load STEP file
     STEPControl_Reader reader;
-    if (reader.ReadFile(filename.c_str()) != IFSelect_RetDone) {
+    if (reader.ReadFile(file_fullpath.c_str()) != IFSelect_RetDone) {
         return -1;
     }
 
@@ -38,7 +49,7 @@ int processStepFile(const std::string& filename, std::ofstream& myfile) {
     BRepGProp::VolumeProperties(shape, properties);
     double volume = properties.Mass() / 1000;
     //write file
-    myfile << filename << ",";
+    myfile << c_filename << ",";
     myfile << (xMax - xMin) / 10 << ",";
     myfile << (yMax - yMin) / 10 << ",";
     myfile << (zMax - zMin) / 10 << ",";
