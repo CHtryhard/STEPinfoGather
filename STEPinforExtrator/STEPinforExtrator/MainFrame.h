@@ -13,7 +13,7 @@ private:
     void OnOpenFolder(wxCommandEvent& event);
     void OnCloseWindow(wxCommandEvent& event);
     void OnConfirmButton(wxCommandEvent& event);
-    //wxGenericDirCtrl* m_dirCtrl;
+    wxGenericDirCtrl* m_dirCtrl;
     wxTextCtrl* fileListTextCtrl;
     wxString selectedPath;
 };

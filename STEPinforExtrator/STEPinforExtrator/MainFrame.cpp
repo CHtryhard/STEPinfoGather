@@ -4,7 +4,8 @@
 #include <wx/dir.h>
 #include "STEP__Converter.h"
 #include <string>
-
+#include<fstream>
+#include<ctime>
 
 MyFrame::MyFrame(const wxString& title)
     : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
