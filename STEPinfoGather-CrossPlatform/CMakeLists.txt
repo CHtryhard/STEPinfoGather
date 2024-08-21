@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-set(CMAKE_TOOLCHAIN_FILE "D:/vcpkg/scripts/buildsystems/vcpkg.cmake")
-set(VCPKG_TARGET_TRIPLET "x64-windows-static")
+set(CMAKE_TOOLCHAIN_FILE "~/vcpkg/scripts/buildsystems/vcpkg.cmake")
+#set(VCPKG_TARGET_TRIPLET "x64-windows-static")
 #try out cmake
 # set(VCPKG_LIBRARY_LINKAGE static)
-
 if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     # If no deployment target has been set default to the minimum supported
     # OS version (this has to be set before the first project() call)
@@ -15,7 +14,7 @@ if(APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
     endif()
 endif()
 
-project(step_infor_exporter CXX)
+project(step_infor_mac CXX)
 
 cmake_policy(SET CMP0091 NEW) 
 
@@ -27,9 +26,9 @@ find_package(OpenCASCADE CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set the MSVC runtime library to static
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+#set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-add_executable(example WIN32 MACOSX_BUNDLE src/App.cpp src/MainFrame.cpp)
+add_executable(example MACOSX_BUNDLE src/App.cpp src/MainFrame.cpp)
 target_include_directories(example PUBLIC src)
 target_link_libraries(example PRIVATE  "TKBin"     "TKCAF"       "TKDEPLY"  "TKG2d"      "TKMesh"    "TKShHealing" "TKXCAF"
 "TKBinL"    "TKCDF"       "TKDESTEP" "TKG3d"      "TKMeshVS"  "TKStd"       "TKXMesh"

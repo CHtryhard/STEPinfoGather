@@ -85,16 +85,12 @@ void MyFrame::OnConfirmButton(wxCommandEvent& event)
     std::ofstream outputfile;
     std::time_t currentTime = std::time(nullptr);
     // Initialize a tm structure
-    std::tm localTime;
-    // Convert to local time using localtime_s
-    localtime_s(&localTime, &currentTime);
+    std::tm* localTime = std::localtime(&currentTime);
     // Extract the year, month, day, hour, minute
-    int year = localTime.tm_year + 1900; // tm_year is years since 1900
-    int month = localTime.tm_mon + 1;    // tm_mon is 0-based, so add 1
-    int day = localTime.tm_mday;
-    int hour =  localTime.tm_hour;
-    int minute = localTime.tm_min;
-    std::string outputpath = c_path + "//" + std::to_string(year) + "-" + std::to_string(month) + "-" + std::to_string(day) + "__" + (hour < 10? "0":"") + std::to_string(hour) + (hour < 10 ? "0" : "")+std::to_string(minute) + ".csv";
+    std::ostringstream oss;
+    oss << std::put_time(localTime,"%Y-%m-%d__%H%M");
+    std::string timestamp = oss.str();
+    std::string outputpath = c_path + "/" + timestamp + ".csv";
     outputfile.open(outputpath, std::ios::app);
     //write header
     outputfile << "File name,X,Y,Z,BV/5000,SV,Density,Weight,QTY" << std::endl;
@@ -104,7 +100,7 @@ void MyFrame::OnConfirmButton(wxCommandEvent& event)
         if (MatchesPattern(filename, patterns)) {
         wxLogMessage(filename);
         c_filename = filename.ToStdString();
-        c_filepath = c_path +"\\"+ c_filename;
+        c_filepath = c_path +"/"+ c_filename;
         processStepFile(c_filepath, c_filename, outputfile);
         }
         cont = dir.GetNext(&filename);
