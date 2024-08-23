@@ -6,6 +6,7 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <cctype>
 
 MyFrame::MyFrame(const wxString& title)
     : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600, 400))
@@ -78,6 +79,10 @@ void MyFrame::OnConfirmButton(wxCommandEvent& event)
     wxArrayString patterns;
     patterns.Add("*.step");
     patterns.Add("*.stp");
+    patterns.Add("*.STEP");
+    patterns.Add("*.STP");
+    patterns.Add("*.Step");
+    patterns.Add("*.Stp");
 
     bool cont = dir.GetFirst(&filename, wxEmptyString, wxDIR_FILES);
 
